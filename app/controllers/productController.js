@@ -11,7 +11,6 @@ const FILE_TYPE_MAP = {
     'image/png':'png',
     'image/jpg':'jpg',
     'image/jpeg':'jpeg',
-
 }
 
 const storage = multer.diskStorage({
