@@ -13,10 +13,10 @@ const dialect = 'postgres';
 
 let sequelize;
 if (config?.url) {
-  sequelize = new Sequelize(config?.url, config);
+  sequelize = new Sequelize(config?.url, config, {dialect: dialect});
 } else {
   sequelize = new Sequelize(config?.database, config?.username, config?.password, config, {
-    dialect: dialect, });
+    dialect: dialect });
 }
 
 fs
