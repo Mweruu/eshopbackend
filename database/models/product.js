@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         },
         richDescription:{
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1234),
         },
         image:{
             type: DataTypes.STRING,
