@@ -8,15 +8,21 @@ module.exports = (sequelize, DataTypes) => {
             unique: true,
           },
         quantity:{
-          type:DataTypes.STRING,
+          type:DataTypes.INTEGER,
           allowNull:false
         },
-
+      
         },{});
         OrderItem.associate = function(models){
-        OrderItem.hasMany(models.product,{
-        foreignKey:'orderId'
-        })
+          OrderItem.belongsTo(models.product,{
+            foreignKey:'productId'
+          })
+          OrderItem.belongsTo(models.order,{
+            foreignKey:'orderId'
+          })
+          OrderItem.belongsTo(models.user,{
+            foreignKey:'userId'
+          })
         };
 
         return OrderItem;

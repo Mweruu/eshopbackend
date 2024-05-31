@@ -51,26 +51,26 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             })
         }
 
-        // let file = null;
-        // let files = [];
-        // let imagesPaths = [];
-        // let imagePath = '';
-        // let basePath;
-        // // if(env === 'production'){
-        // //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        // // }else {
+        let file = null;
+        let files = [];
+        let imagesPaths = [];
+        let imagePath = '';
+        let basePath;
+        // if(env === 'production'){
         //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        // // }
-        // files = req.files
-        // file = files[0] || null;
-        // files.map((el) => {
-        //     console.log("Data", el)
-        //     imagesPaths.push(`${basePath}${el.filename}`);
+        // }else {
+            basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        // }
+        files = req.files
+        file = files[0] || null;
+        files.map((el) => {
+            console.log("Data", el)
+            imagesPaths.push(`${basePath}${el.filename}`);
 
-        // });
-        // if (!file) return res.status(400).send({message:'No image in the request'});
-        // imagePath = `${basePath}${file.filename}`;
-        // console.log(req.body)
+        });
+        if (!file) return res.status(400).send({message:'No image in the request'});
+        imagePath = `${basePath}${file.filename}`;
+        console.log(req.body)
 
         // const file = req.file;
         // if(!file) return res.status(400).send('No image in the request')
@@ -88,8 +88,8 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             brand:req.body.brand,
             countInStock:req.body.countInStock,
             // rating:req.body.rating,
-            // image:imagePath,
-            // images:imagesPaths,
+            image:imagePath,
+            images:imagesPaths,
             // numReviews:req.body.numReviews,
             isFeatured:req.body.isFeatured,
     });
@@ -143,26 +143,26 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
         }
 
 
-    // let file = null;
-    // let files = [];
-    // let imagesPaths = [];
-    // let imagePath = '';
-    // let basePath;
-    // // if(env === 'production'){
-    // //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    // // }else {
+    let file = null;
+    let files = [];
+    let imagesPaths = [];
+    let imagePath = '';
+    let basePath;
+    // if(env === 'production'){
     //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    // // }
-    // files = req.files
-    // file = files[0] || null;
-    // files.map((el) => {
-    //     console.log("Data", el)
-    //     imagesPaths.push(`${basePath}${el.filename}`);
+    // }else {
+    basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    // }
+    files = req.files
+    file = files[0] || null;
+    files.map((el) => {
+        console.log("Data", el)
+        imagesPaths.push(`${basePath}${el.filename}`);
 
-    // });
-    // if (!file) return res.status(400).send({message:'No image in the request'});
-    // imagePath = `${basePath}${file.filename}`;
-    // console.log(req.body)
+    });
+    if (!file) return res.status(400).send({message:'No image in the request'});
+    imagePath = `${basePath}${file.filename}`;
+    console.log(req.body)
 
     
      const updatedProduct = await models.product.update({
@@ -176,7 +176,7 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
         brand:req.body.brand,
         countInStock:req.body.countInStock,
         // rating:req.body.rating,
-        // image:imagePath,
+        image:imagePath,
         // images:imagesPaths,
         // numReviews:req.body.numReviews,
         isFeatured:req.body.isFeatured,
@@ -327,11 +327,11 @@ router.put('images/:id', uploadOptions.array('images', 10),async(req,res)=>{
     let imagesPaths = [];
     const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
-    // if(files){
-    //     files.map(file =>{
-    //         imagesPaths.push(`${file.fileName},${basePath}`)
-    //     })
-    // }
+    if(files){
+        files.map(file =>{
+            imagesPaths.push(`${file.fileName},${basePath}`)
+        })
+    }
     const updatedProduct = await models.product.update({
         images:imagesPaths,
 
