@@ -7,12 +7,11 @@ const router = express.Router();
 
 router.post('/createorderitem', async (req,res) => {
     try {
-        console.log("rgrtrt5454", req.body)
         const dateOrdered = new Date();
         const orderItem = await models.orderItem.create({
+            productId:req.body.productId,
             orderId:req.body.orderId,
             userId:req.body.userId,
-            productId:req.body.productId,
             quantity:req.body.quantity,
             dateOrdered:dateOrdered,
        
@@ -52,7 +51,8 @@ router.get('/getorderitem/:orderId', async (req,res) => {
     console.log("orderid", orderId)
     try{
         const orderItem = await models.order.findByPk(orderId,{
-            // include:models.user
+            // include:models.user,
+            // include:models.product
         });
         if(!orderItem){
             return res.status(500).json({
