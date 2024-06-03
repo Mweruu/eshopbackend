@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.post('/createorderitem', async (req,res) => {
     try {
-        console.log(req.body, req.body.productId)
         const dateOrdered = new Date();
         const orderItem = await models.orderItem.create({
             productId:req.body.productId,
