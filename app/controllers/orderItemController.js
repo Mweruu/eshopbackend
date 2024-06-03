@@ -9,6 +9,12 @@ router.post('/createorderitem', async (req,res) => {
     try {
         console.log(req.body)
         const dateOrdered = new Date();
+        const product = await models.Product.findByPk(req.body.productId);
+        if (!product) {
+          return res.status(400).json({ error: 'Product not found' });
+        }
+        console.log("orderitem", req.body)
+
         const orderItem = await models.orderItem.create({
             productId:req.body.productId,
             orderId:req.body.orderId,
