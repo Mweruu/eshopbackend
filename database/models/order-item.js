@@ -10,20 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         quantity:{
           type:DataTypes.INTEGER,
           allowNull:false
-        },
-        productId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
-        orderId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-      
+        }, 
         },{});
         OrderItem.associate = function(models){
           OrderItem.belongsTo(models.product,{
