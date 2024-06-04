@@ -48,8 +48,7 @@ router.get('/getorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
         const order = await models.order.findByPk(id,{
-            include:models.user,
-            include:models.orderItem
+            include:[ models.user, models.orderItem ]
         });
         if(!order){
             return res.status(500).json({
