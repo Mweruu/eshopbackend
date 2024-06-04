@@ -33,8 +33,7 @@ router.post('/createorder', async (req,res) => {
 router.get('/getorders', async (req,res) => {
     try {
         const orders = await models.order.findAll({
-            include:models.user,
-            include:models.orderItem
+            include:[ models.user, models.orderItem ]
         });
         return res.status(201).json(
             orders,
@@ -49,8 +48,7 @@ router.get('/getorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
         const order = await models.order.findByPk(id,{
-            include:models.user,
-            include:models.orderItem
+            include:[ models.user, models.orderItem ]
         });
         if(!order){
             return res.status(500).json({
