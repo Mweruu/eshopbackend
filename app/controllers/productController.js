@@ -62,15 +62,15 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
         // }
         files = req.files
-        file = files[0] || null;
-        files.map((el) => {
-            console.log("Data", el)
-            imagesPaths.push(`${basePath}${el.filename}`);
+        // file = files[0] || null;
+        // files.map((el) => {
+        //     console.log("Data", el)
+        //     imagesPaths.push(`${basePath}${el.filename}`);
 
-        });
-        if (!file) return res.status(400).send({message:'No image in the request'});
-        imagePath = `${basePath}${file.filename}`;
-        console.log(req.body)
+        // });
+        // if (!file) return res.status(400).send({message:'No image in the request'});
+        // imagePath = `${basePath}${file.filename}`;
+        // console.log(req.body)
 
         // const file = req.file;
         // if(!file) return res.status(400).send('No image in the request')
@@ -88,11 +88,12 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             brand:req.body.brand,
             countInStock:req.body.countInStock,
             // rating:req.body.rating,
-            image:imagePath,
-            images:imagesPaths,
+            // image:imagePath,
+            // images:imagesPaths,
             // numReviews:req.body.numReviews,
             isFeatured:req.body.isFeatured,
     });
+    console.log("proerjdfjd", product)
     return res.status(201).json({
         product,
     });
@@ -196,7 +197,10 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
 router.get('/getproduct/:id', async (req,res) => {
     const id =req.params.id
     try{
-        const product = await models.product.findByPk(id, {});
+        const product = await models.product.findByPk(id, {
+            include:models.category
+
+        });
     if(!product){
         return res.status(500).json({
             success:false,
