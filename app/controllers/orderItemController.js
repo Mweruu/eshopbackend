@@ -17,13 +17,13 @@ router.post('/createorderitem', async (req,res) => {
        
         });
 
-        const user = await models.user.findByPk(req.body.userId);
-            if(!user){
-                return res.status(500).json({
-                    message:'user not found',
-                    success:false
-                })
-            }
+        // const user = await models.user.findByPk(req.body.userId);
+        //     if(!user){
+        //         return res.status(500).json({
+        //             message:'user not found',
+        //             success:false
+        //         })
+        //     }
         return res.status(201).json({
             orderItem,
         });
