@@ -6,6 +6,10 @@ const router = express.Router();
 const { randomUUID } = require('crypto');
 const multer = require('multer')
 
+const uploadDir = path.join(__dirname, '../../public/uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const FILE_TYPE_MAP = {
     'image/png':'png',
@@ -20,7 +24,9 @@ const storage = multer.diskStorage({
     if(isValid){
         uploadError=null
     }
-      cb(uploadError, 'public/uploads')
+    //   cb(uploadError, 'public/uploads')
+      cb(uploadError, uploadDir);
+
     },
     filename: function (req, file, cb) {
       const extension = FILE_TYPE_MAP[file.mimetype];
@@ -29,7 +35,7 @@ const storage = multer.diskStorage({
     }
   })
   
-  const uploadOptions = multer({ storage: storage })
+const uploadOptions = multer({ storage: storage })
 
 router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
     console.log("reqbody",req, req.body, req.files);
@@ -70,11 +76,6 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
         if (!file) return res.status(400).send({message:'No image in the request'});
         imagePath = `${basePath}${file.filename}`;
         console.log(req.body)
-
-        // const file = req.file;
-        // if(!file) return res.status(400).send('No image in the request')
-        // const fileName = req.file.filename
-        // const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
         const product = await models.product.create({
             id: randomUUID(),
