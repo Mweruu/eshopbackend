@@ -6,7 +6,6 @@ const router = express.Router();
 
 
 router.post('/createuser', async (req,res) =>{
-    console.log("ytyt",req.body ,)
     try{
         const user = await models.user.create({
             name:req.body.name,

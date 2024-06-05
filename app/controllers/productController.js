@@ -154,6 +154,7 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
     // }else {
     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
     // }
+    console.log("files", req.files)
     files = req.files
     file = files[0] || null;
     files.map((el) => {
