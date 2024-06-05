@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
 const uploadOptions = multer({ storage: storage })
 
 router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
-    console.log("reqbody",req, req.body, req.files);
+    console.log("reqbody",req.body, req.files);
     // res.send(req.body);
     try{
         const category = await models.category.findByPk(req.body.categoryId);
