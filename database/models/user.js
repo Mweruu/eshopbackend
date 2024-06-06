@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         name:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:true
         },
         email:{
           type:DataTypes.STRING,
@@ -21,27 +21,27 @@ module.exports = (sequelize, DataTypes) => {
         },
         phone:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:true
         }, 
         street:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:true
         },
         apartment:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:true
         },
         city:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:tru
         },
         zip:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:true
         },
         country:{
           type:DataTypes.STRING,
-          allowNull:false
+          allowNull:true
         },
         isAdmin:{
           type:DataTypes.BOOLEAN,
