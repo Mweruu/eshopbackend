@@ -7,6 +7,8 @@ const { randomUUID } = require('crypto');
 const multer = require('multer')
 const fs = require('fs');
 const path = require('path');
+const cloudinary = require('../../cloudinaryconfig.js');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const uploadDir = path.join(__dirname, '../../public/uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -19,23 +21,41 @@ const FILE_TYPE_MAP = {
     'image/jpeg':'jpeg',
 }
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-    const isValid = FILE_TYPE_MAP[file.mimetype];
-    let uploadError = new Error('invalid image type')
-    if(isValid){
-        uploadError=null
-    }
-    //   cb(uploadError, 'public/uploads')
-      cb(uploadError, uploadDir);
 
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//     const isValid = FILE_TYPE_MAP[file.mimetype];
+//     let uploadError = new Error('invalid image type')
+//     if(isValid){
+//         uploadError=null
+//     }
+//     //   cb(uploadError, 'public/uploads')
+//       cb(uploadError, uploadDir);
+
+//     },
+//     filename: function (req, file, cb) {
+//       const extension = FILE_TYPE_MAP[file.mimetype];
+//       const fileName = file.originalname.split(' ').join('-');
+//       cb(null, `${fileName}-${Date.now()}.${extension}`)
+//     }
+//   })
+
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'uploads',
+        format: async (req, file) => {
+            const ext = FILE_TYPE_MAP[file.mimetype];
+            return ext ? ext : 'jpg'; // Default to jpg if format is not in the map
+        },
+        public_id: (req, file) => {
+            const fileName = file.originalname.split(' ').join('-');
+            return `${fileName}-${Date.now()}`;
+        },
     },
-    filename: function (req, file, cb) {
-      const extension = FILE_TYPE_MAP[file.mimetype];
-      const fileName = file.originalname.split(' ').join('-');
-      cb(null, `${fileName}-${Date.now()}.${extension}`)
-    }
-  })
+});
+
   
 const uploadOptions = multer({ storage: storage })
 
@@ -58,26 +78,33 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             })
         }
 
-        let file = null;
-        let files = [];
-        let imagesPaths = [];
-        let imagePath = '';
-        let basePath;
-        // if(env === 'production'){
+        // let file = null;
+        // let files = [];
+        // let imagesPaths = [];
+        // let imagePath = '';
+        // let basePath;
+        // // if(env === 'production'){
+        // //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        // // }else {
         //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        // }else {
-            basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        // }
-        files = req.files
-        file = files[0] || null;
-        files.map((el) => {
-            console.log("Data", el)
-            imagesPaths.push(`${basePath}${el.filename}`);
+        // // }
+        // files = req.files
+        // file = files[0] || null;
+        // files.map((el) => {
+        //     console.log("Data", el)
+        //     imagesPaths.push(`${basePath}${el.filename}`);
 
-        });
-        if (!file) return res.status(400).send({message:'No image in the request'});
-        imagePath = `${basePath}${file.filename}`;
-        console.log(req.body)
+        // });
+        // if (!file) return res.status(400).send({message:'No image in the request'});
+        // imagePath = `${basePath}${file.filename}`;
+        // console.log(req.body)
+
+        let files = req.files;
+        let imagesPaths = files.map(file => file.path); // Cloudinary returns the file path in the path property
+        let imagePath = files[0]?.path || '';
+
+        if (!files.length) return res.status(400).send({ message: 'No image in the request' });
+
 
         const product = await models.product.create({
             id: randomUUID(),
@@ -146,30 +173,36 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
         }
 
 
-    let file = null;
-    let files = [];
-    let imagesPaths = [];
-    let imagePath = '';
-    let basePath;
-    // if(env === 'production'){
-    //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    // }else {
-    basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    // }
-    console.log("files", req.files)
-    files = req.files
-    file = files[0] || null;
-    files.map((el) => {
-        console.log("Data", el)
-        imagesPaths.push(`${basePath}${el.filename}`);
+    // let file = null;
+    // let files = [];
+    // let imagesPaths = [];
+    // let imagePath = '';
+    // let basePath;
+    // // if(env === 'production'){
+    // //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    // // }else {
+    // basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    // // }
+    // console.log("files", req.files)
+    // files = req.files
+    // file = files[0] || null;
+    // files.map((el) => {
+    //     console.log("Data", el)
+    //     imagesPaths.push(`${basePath}${el.filename}`);
 
-    });
-    if (!file) return res.status(400).send({message:'No image in the request'});
-    imagePath = `${basePath}${file.filename}`;
-    console.log(req.body)
+    // });
+    // if (!file) return res.status(400).send({message:'No image in the request'});
+    // imagePath = `${basePath}${file.filename}`;
+    // console.log(req.body)
 
+
+    let files = req.files;
+    let imagesPaths = files.map(file => file.path);
+    let imagePath = files[0]?.path || '';
+
+    if (!files.length) return res.status(400).send({ message: 'No image in the request' });
     
-     const updatedProduct = await models.product.update({
+    const updatedProduct = await models.product.update({
         id: randomUUID(),
         userId:req.body.userId,
         categoryId:req.body.categoryId,
