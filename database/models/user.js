@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         city:{
           type:DataTypes.STRING,
-          allowNull:tru
+          allowNull:true
         },
         zip:{
           type:DataTypes.STRING,
