@@ -54,7 +54,7 @@ const storage = new CloudinaryStorage({
             return `${fileName}-${Date.now()}`;
         },
         transformation: [
-            { width: 1250, height: 1250, gravity: 'faces', crop: 'thumb' },
+            { width: 11250, height: 11250, gravity: 'faces', crop: 'thumb' },
         ],
 
 
