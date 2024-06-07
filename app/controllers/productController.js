@@ -10,10 +10,10 @@ const path = require('path');
 const cloudinary = require('../../cloudinaryconfig.js');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const uploadDir = path.join(__dirname, '../../public/uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// const uploadDir = path.join(__dirname, '../../public/uploads');
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir, { recursive: true });
+// }
 
 const FILE_TYPE_MAP = {
     'image/png':'png',
@@ -53,6 +53,12 @@ const storage = new CloudinaryStorage({
             const fileName = file.originalname.split(' ').join('-');
             return `${fileName}-${Date.now()}`;
         },
+        transformation: [
+            { width: 250, height: 250, gravity: 'faces', crop: 'thumb' },
+            { radius: 'max' },
+        ],
+
+
     },
 });
 
