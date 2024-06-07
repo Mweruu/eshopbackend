@@ -17,13 +17,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(1234),
         },
         image:{
-            // type: DataTypes.STRING,
-            type: DataTypes.ARRAY(DataTypes.STRING),
-
+            type: DataTypes.STRING,
         },
-        // images:{
-        //     type: DataTypes.ARRAY(DataTypes.STRING),
-        // },
+        images:{
+            type: DataTypes.ARRAY(DataTypes.STRING),
+        },
         brand:{
             type: DataTypes.STRING,
             defaultValue:''
