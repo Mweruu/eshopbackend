@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         image:{
             type: DataTypes.STRING,
         },
-        // images:{
-        //     type: DataTypes.STRING,
-        // },
+        images:{
+            type: DataTypes.STRING,
+        },
         brand:{
             type: DataTypes.STRING,
             defaultValue:''
