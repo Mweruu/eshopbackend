@@ -53,9 +53,9 @@ const storage = new CloudinaryStorage({
             const fileName = file.originalname.split(' ').join('-');
             return `${fileName}-${Date.now()}`;
         },
-        transformation: [
-            { width: 5000, height: 5000, gravity: 'faces', crop: 'thumb' },
-        ],
+        // transformation: [
+        //     { width: 5000, height: 5000, gravity: 'faces', crop: 'thumb' },
+        // ],
 
 
     },
