@@ -14,14 +14,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         },
         richDescription:{
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1234),
         },
         image:{
             type: DataTypes.STRING,
         },
-        images:[{
-            type: DataTypes.STRING,
-        }],
+        images:{
+            type: DataTypes.ARRAY(DataTypes.STRING),
+        },
         brand:{
             type: DataTypes.STRING,
             defaultValue:''
@@ -56,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
         Product.belongsTo(models.user, {
             foreignKey:'userId'
         })
+        Product.hasMany(models.orderItem, {
+            foreignKey:'productId'
+          })
          // Product.belongsTo(models.order, {
         //     foreignKey:'orderId'
         // })

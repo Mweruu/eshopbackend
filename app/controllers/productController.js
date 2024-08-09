@@ -5,7 +5,15 @@ const express = require('express');
 const router = express.Router();
 const { randomUUID } = require('crypto');
 const multer = require('multer')
+const fs = require('fs');
+const path = require('path');
+const cloudinary = require('../../cloudinaryconfig.js');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+// const uploadDir = path.join(__dirname, '../../public/uploads');
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir, { recursive: true });
+// }
 
 const FILE_TYPE_MAP = {
     'image/png':'png',
@@ -13,26 +21,51 @@ const FILE_TYPE_MAP = {
     'image/jpeg':'jpeg',
 }
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-    const isValid = FILE_TYPE_MAP[file.mimetype];
-    let uploadError = new Error('invalid image type')
-    if(isValid){
-        uploadError=null
-    }
-      cb(uploadError, 'public/uploads')
+
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//     const isValid = FILE_TYPE_MAP[file.mimetype];
+//     let uploadError = new Error('invalid image type')
+//     if(isValid){
+//         uploadError=null
+//     }
+//     //   cb(uploadError, 'public/uploads')
+//       cb(uploadError, uploadDir);
+
+//     },
+//     filename: function (req, file, cb) {
+//       const extension = FILE_TYPE_MAP[file.mimetype];
+//       const fileName = file.originalname.split(' ').join('-');
+//       cb(null, `${fileName}-${Date.now()}.${extension}`)
+//     }
+//   })
+
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'uploads',
+        format: async (req, file) => {
+            const ext = FILE_TYPE_MAP[file.mimetype];
+            return ext ? ext : 'jpg'; // Default to jpg if format is not in the map
+        },
+        public_id: (req, file) => {
+            const fileName = file.originalname.split(' ').join('-');
+            return `${fileName}-${Date.now()}`;
+        },
+        // transformation: [
+        //     { width: 5000, height: 5000, gravity: 'faces', crop: 'thumb' },
+        // ],
+
+
     },
-    filename: function (req, file, cb) {
-      const extension = FILE_TYPE_MAP[file.mimetype];
-      const fileName = file.originalname.split(' ').join('-');
-      cb(null, `${fileName}-${Date.now()}.${extension}`)
-    }
-  })
+});
+
   
-  const uploadOptions = multer({ storage: storage })
+const uploadOptions = multer({ storage: storage })
 
 router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
-    console.log("reqbody",req.body, req.files);
+    console.log("reqbody",req.body, req.files, req.protocol,req.get('host') );
     // res.send(req.body);
     try{
         const category = await models.category.findByPk(req.body.categoryId);
@@ -50,31 +83,33 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             })
         }
 
-        let file = null;
-        let files = [];
-        let imagesPaths = [];
-        let imagePath = '';
-        let basePath;
-        // if(env === 'production'){
+        // let file = null;
+        // let files = [];
+        // let imagesPaths = [];
+        // let imagePath = '';
+        // let basePath;
+        // // if(env === 'production'){
+        // //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        // // }else {
         //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        // }else {
-            basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        // }
-        files = req.files
-        file = files[0] || null;
-        files.map((el) => {
-            console.log("Data", el)
-            imagesPaths.push(`${basePath}${el.filename}`);
+        // // }
+        // files = req.files
+        // file = files[0] || null;
+        // files.map((el) => {
+        //     console.log("Data", el)
+        //     imagesPaths.push(`${basePath}${el.filename}`);
 
-        });
-        if (!file) return res.status(400).send({message:'No image in the request'});
-        imagePath = `${basePath}${file.filename}`;
-        console.log(req.body)
+        // });
+        // if (!file) return res.status(400).send({message:'No image in the request'});
+        // imagePath = `${basePath}${file.filename}`;
+        // console.log(req.body)
 
-        // const file = req.file;
-        // if(!file) return res.status(400).send('No image in the request')
-        // const fileName = req.file.filename
-        // const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        let files = req.files;
+        let imagesPaths = files.map(file => file.path); // Cloudinary returns the file path in the path property
+        let imagePath = files[0]?.path || '';
+
+        if (!files.length) return res.status(400).send({ message: 'No image in the request' });
+
 
         const product = await models.product.create({
             id: randomUUID(),
@@ -86,12 +121,13 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
             richDescription:req.body.richDescription,
             brand:req.body.brand,
             countInStock:req.body.countInStock,
-            rating:req.body.rating,
+            // rating:req.body.rating,
             image:imagePath,
             images:imagesPaths,
             // numReviews:req.body.numReviews,
             isFeatured:req.body.isFeatured,
     });
+    console.log("proerjdfjd", product)
     return res.status(201).json({
         product,
     });
@@ -133,40 +169,47 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
             })
         }
 
-    // const user = await models.user.findByPk(req.body.userId);
-    //     if(!user){
-    //         return res.status(500).json({
-    //             message:'user not found',
-    //             success:false
-    //         })
-    //     }
+    const user = await models.user.findByPk(req.body.userId);
+        if(!user){
+            return res.status(500).json({
+                message:'user not found',
+                success:false
+            })
+        }
 
 
-    let file = null;
-    let files = [];
-    let imagesPaths = [];
-    let imagePath = '';
-    let basePath;
-    // if(env === 'production'){
-    //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    // }else {
-        basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    // }
-    files = req.files
-    file = files[0] || null;
-    files.map((el) => {
-        console.log("Data", el)
-        imagesPaths.push(`${basePath}${el.filename}`);
+    // let file = null;
+    // let files = [];
+    // let imagesPaths = [];
+    // let imagePath = '';
+    // let basePath;
+    // // if(env === 'production'){
+    // //     basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    // // }else {
+    // basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    // // }
+    // console.log("files", req.files)
+    // files = req.files
+    // file = files[0] || null;
+    // files.map((el) => {
+    //     console.log("Data", el)
+    //     imagesPaths.push(`${basePath}${el.filename}`);
 
-    });
-    if (!file) return res.status(400).send({message:'No image in the request'});
-    imagePath = `${basePath}${file.filename}`;
-    console.log(req.body)
+    // });
+    // if (!file) return res.status(400).send({message:'No image in the request'});
+    // imagePath = `${basePath}${file.filename}`;
+    // console.log(req.body)
 
+
+    let files = req.files;
+    let imagesPaths = files.map(file => file.path);
+    let imagePath = files[0]?.path || '';
+
+    if (!files.length) return res.status(400).send({ message: 'No image in the request' });
     
-     const updatedProduct = await models.product.update({
+    const updatedProduct = await models.product.update({
         id: randomUUID(),
-        // userId:req.body.userId,
+        userId:req.body.userId,
         categoryId:req.body.categoryId,
         name:req.body.name,
         price:req.body.price,
@@ -174,7 +217,7 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
         richDescription:req.body.richDescription,
         brand:req.body.brand,
         countInStock:req.body.countInStock,
-        rating:req.body.rating,
+        // rating:req.body.rating,
         image:imagePath,
         images:imagesPaths,
         // numReviews:req.body.numReviews,
@@ -195,7 +238,10 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
 router.get('/getproduct/:id', async (req,res) => {
     const id =req.params.id
     try{
-        const product = await models.product.findByPk(id, {});
+        const product = await models.product.findByPk(id, {
+            include:models.category
+
+        });
     if(!product){
         return res.status(500).json({
             success:false,

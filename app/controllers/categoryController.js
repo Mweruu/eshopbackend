@@ -4,7 +4,6 @@ const router = express.Router();
 
 
 router.post('/createcategory', async (req,res) =>{
-    console.log("ytyt",req.body ,)
     try{
         const category = await models.category.create({
         name:req.body.name,
@@ -37,8 +36,6 @@ router.get('/getcategory/:id',async (req,res) =>{
     try{
         const category = await models.category.findByPk(id, {
         });
-        console.log(323232,category)
-
         if(!category) {
             return res.status(500).json({
                 error: `category can not be found`,
@@ -85,7 +82,6 @@ router.delete('/deletecategory/:id', async(req,res)=>{
     const id = req.params.id;
     try{
         const category = await models.category.findByPk(id);
-        console.log(category)
         if(!category) {
             return res.status(404).json({
                 error: `category not found`,

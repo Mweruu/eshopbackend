@@ -11,6 +11,8 @@ const productRouter = require('./app/controllers/productController');
 const categoryRouter = require('./app/controllers/categoryController');
 const userRouter = require('./app/controllers/userController');
 const orderRouter = require('./app/controllers/orderController');
+const orderItemRouter = require('./app/controllers/orderItemController')
+
 
 //middleware
 app.use(express.json());
@@ -24,6 +26,7 @@ app.use(`${api}`, productRouter);
 app.use(`${api}`, categoryRouter);
 app.use(`${api}`, userRouter);
 app.use(`${api}`, orderRouter);
+app.use(`${api}`, orderItemRouter);
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,3 +40,14 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>{
     console.log(`Server  is running on port ${PORT}`);
 })
+
+// Require the cloudinary library
+const cloudinary = require('cloudinary').v2;
+
+// Return "https" URLs by setting secure: true
+cloudinary.config({
+  secure: true
+});
+
+// Log the configuration
+console.log(cloudinary.config());

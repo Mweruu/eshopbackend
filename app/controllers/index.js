@@ -3,4 +3,5 @@ module.exports = {
     productController: require('./productController'),
     categoryContoller:require('./categoryController'),
     userController:require('./userController'),
+    OrderItemController:require('./orderItemController')
 };

@@ -10,6 +10,7 @@ router.post('/createorder', async (req,res) => {
         const dateOrdered = new Date();
     const order = await models.order.create({
         userId:req.body.userId,
+        productId:req.body.productId,
         shippingAddress1:req.body.shippingAddress1,
         shippingAddress2:req.body.shippingAddress2,
         city:req.body.city,
@@ -32,7 +33,7 @@ router.post('/createorder', async (req,res) => {
 router.get('/getorders', async (req,res) => {
     try {
         const orders = await models.order.findAll({
-            include:models.user
+            include: [models.user, models.orderItem]
         });
         return res.status(201).json(
             orders,
@@ -47,7 +48,7 @@ router.get('/getorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
         const order = await models.order.findByPk(id,{
-            include:models.user
+            include:[ models.user, models.orderItem ]
         });
         if(!order){
             return res.status(500).json({
