@@ -9,12 +9,18 @@ const env = process.env.NODE_ENV || 'development';
 const config = envConfigs[env];
 
 const db = {};
+const dialect = 'postgres';
 
 let sequelize;
-if (config.url) {
-  sequelize = new Sequelize(config.url, config);
+if (config?.url) {
+  sequelize = new Sequelize(config?.url, {
+    dialect: dialect,
+    ...config
+  });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(config?.database, config?.username, config?.password,{
+    ...config,
+    dialect: dialect });
 }
 
 fs
@@ -44,7 +50,7 @@ db.sequelize.sync()
     console.log("Synced db.");
   })
   .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
+    console.log("Failed to sync db: " + err.message + err);
   });
 
 module.exports = db;
