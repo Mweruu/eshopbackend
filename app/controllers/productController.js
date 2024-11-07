@@ -177,7 +177,7 @@ router.patch('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
             })
         }
 
-
+    console.log("requesttt", req, req.files, req.params.id)
     // let file = null;
     // let files = [];
     // let imagesPaths = [];
