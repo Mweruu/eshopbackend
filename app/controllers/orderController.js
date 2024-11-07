@@ -30,7 +30,7 @@ router.post('/createorder', async (req,res) => {
     } 
 });
 
-router.patch('/getorders', async (req,res) => {
+router.get('/getorders', async (req,res) => {
     try {
         const orders = await models.order.findAll({
             include: [models.user, models.orderItem]
@@ -88,7 +88,7 @@ router.get('/getorders/:userId', async (req,res) => {
     }
 });
 
-router.put('/updateorder/:id', async (req,res) =>{
+router.patch('/updateorder/:id', async (req,res) =>{
     const id = req.params.id;
     try{
         const order = await models.order.findByPk(id,{});
