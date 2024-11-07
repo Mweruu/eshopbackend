@@ -50,7 +50,7 @@ router.get('/getcategory/:id',async (req,res) =>{
     }
 })
 
-router.put('/updatecategory/:id',async(req,res) =>{
+router.patch('/updatecategory/:id',async(req,res) =>{
     const id = req.params.id;
     try{
         const category = await models.category.findByPk(id,{});

@@ -103,7 +103,7 @@ router.get('/getuser/:id', async (req,res) => {
 }
 });
 
-router.put('/updateuser/:id', async(req,res)=>{
+router.patch('/updateuser/:id', async(req,res)=>{
     const id = req.params.id;
     try{
         const user = await models.user.findByPk(id, {});

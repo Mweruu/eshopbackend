@@ -151,7 +151,7 @@ router.get('/getproducts', async (req,res) =>{
 }
 });
 
-router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
+router.patch('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
     const id =req.params.id
     try{
       const product = await models.product.findByPk(id, {});
@@ -358,7 +358,7 @@ router.delete('/deleteproduct/:id', async (req,res) => {
 }
 });
 
-router.put('images/:id', uploadOptions.array('images', 10),async(req,res)=>{
+router.patch('images/:id', uploadOptions.array('images', 10),async(req,res)=>{
     const id =req.params.id
       const product = await models.product.findByPk(id, {});
      if(!product){
