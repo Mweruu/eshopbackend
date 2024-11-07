@@ -30,7 +30,7 @@ router.post('/createorder', async (req,res) => {
     } 
 });
 
-router.get('/getorders', async (req,res) => {
+router.patch('/getorders', async (req,res) => {
     try {
         const orders = await models.order.findAll({
             include: [models.user, models.orderItem]
