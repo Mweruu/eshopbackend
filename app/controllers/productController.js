@@ -206,10 +206,10 @@ router.patch('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
     // let imagePath = files[0]?.path || '';
 
     // if (!files.length) return res.status(400).send({ message: 'No image in the request' });
-    let imagesPaths = files.map(file => file.path) || existingImages;
+    let imagesPaths = files.map(file => file.path) || req.body.existingImages;
     let imagePath = files[0]?.path || '';
 
-    if (!files.length && !existingImages) return res.status(400).send({ message: 'No image in the request' });
+    if (!files.length && !req.body.existingImages) return res.status(400).send({ message: 'No image in the request' });
     
     
     
