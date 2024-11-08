@@ -224,9 +224,8 @@ router.patch('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
         brand:req.body.brand,
         countInStock:req.body.countInStock,
         // rating:req.body.rating,
-        // image:imagePath,
-        // images:imagesPaths,
-        images:req.body.existingImages,
+        image:imagePath,
+        images:imagesPaths,
         // numReviews:req.body.numReviews,
         isFeatured:req.body.isFeatured,
      },{
@@ -366,6 +365,7 @@ router.delete('/deleteproduct/:id', async (req,res) => {
 });
 
 router.patch('images/:id', uploadOptions.array('images', 10),async(req,res)=>{
+    console.log("patchimg", req)
     const id =req.params.id
       const product = await models.product.findByPk(id, {});
      if(!product){
