@@ -202,10 +202,16 @@ router.patch('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
 
 
     let files = req.files;
-    let imagesPaths = files.map(file => file.path);
+    // let imagesPaths = files.map(file => file.path);
+    // let imagePath = files[0]?.path || '';
+
+    // if (!files.length) return res.status(400).send({ message: 'No image in the request' });
+    let imagesPaths = files.map(file => file.path) || existingImages;
     let imagePath = files[0]?.path || '';
 
-    if (!files.length) return res.status(400).send({ message: 'No image in the request' });
+    if (!files.length && !existingImages) return res.status(400).send({ message: 'No image in the request' });
+    
+    
     
     const updatedProduct = await models.product.update({
         id: randomUUID(),
