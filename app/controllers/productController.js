@@ -105,7 +105,7 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
         // console.log(req.body)
 
         let files = req.files;
-        let imagesPaths = files.map(file => file.path); // Cloudinary returns the file path in the path property
+        let imagesPaths = files.length > 0 ? files.map(file => file.path) : req.body.existingImages;
         let imagePath = files[0]?.path || '';
 
         if (!files.length) return res.status(400).send({ message: 'No image in the request' });
