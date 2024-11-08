@@ -224,8 +224,9 @@ router.patch('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
         brand:req.body.brand,
         countInStock:req.body.countInStock,
         // rating:req.body.rating,
-        image:imagePath,
-        images:imagesPaths,
+        // image:imagePath,
+        // images:imagesPaths,
+        images:req.body.existingImages,
         // numReviews:req.body.numReviews,
         isFeatured:req.body.isFeatured,
      },{
